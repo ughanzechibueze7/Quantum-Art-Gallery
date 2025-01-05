@@ -52,17 +52,17 @@ describe('Quantum Art NFT Contract', () => {
   });
   
   it('should transfer NFT ownership', () => {
-    const id = mintNFT(2, 'artist2');
-    expect(transferNFT(id, 'artist2', 'collector1')).toBe(true);
+    const id = mintNFT(1, 'artist1');
+    expect(transferNFT(id, 'artist1', 'collector1')).toBe(true);
     expect(tokenOwners.get(id)).toBe('collector1');
   });
   
   it('should not allow unauthorized minting', () => {
-    expect(() => mintNFT(3, 'unauthorized_user')).toThrow('Not authorized');
+    expect(() => mintNFT(1, 'unauthorized_user')).toThrow('Not authorized');
   });
   
   it('should not allow unauthorized transfers', () => {
-    const id = mintNFT(4, 'artist3');
+    const id = mintNFT(1, 'artist1');
     expect(() => transferNFT(id, 'unauthorized_user', 'collector2')).toThrow('Not authorized');
   });
 });
