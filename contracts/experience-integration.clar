@@ -71,7 +71,6 @@
 
 ;; Internal functions
 (define-private (generate-quantum-seed)
-  (sha256 (concat (unwrap-panic (get-block-info? header-hash (- block-height u1)))
-                  (int-to-ascii (var-get experience-count))))
+  (sha256 (unwrap-panic (get-block-info? header-hash (- block-height u1))))
 )
 
