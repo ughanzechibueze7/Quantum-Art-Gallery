@@ -5,6 +5,11 @@ authors = []
 telemetry = true
 cache_dir = './.cache'
 requirements = []
+[contracts.experience-integration]
+path = 'contracts/experience-integration.clar'
+clarity_version = 2
+epoch = 2.5
+
 [contracts.quantum-art-management]
 path = 'contracts/quantum-art-management.clar'
 clarity_version = 2
