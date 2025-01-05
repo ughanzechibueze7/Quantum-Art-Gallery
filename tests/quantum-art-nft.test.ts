@@ -1,21 +1,69 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 
-import { describe, expect, it } from "vitest";
+// Simulated contract state
+let lastTokenId = 0;
+const tokenMetadata = new Map();
+const tokenOwners = new Map();
 
-const accounts = simnet.getAccounts();
-const address1 = accounts.get("wallet_1")!;
+// Mock quantum-art-management contract
+const quantumArtManagement = {
+  getArtwork: (artworkId: number) => ({
+    creator: 'artist1',
+    title: 'Quantum Masterpiece',
+    quantumSignature: 'qsig123'
+  })
+};
 
-/*
-  The test below is an example. To learn more, read the testing documentation here:
-  https://docs.hiro.so/stacks/clarinet-js-sdk
-*/
-
-describe("example tests", () => {
-  it("ensures simnet is well initalised", () => {
-    expect(simnet.blockHeight).toBeDefined();
+// Simulated contract functions
+function mintNFT(artworkId: number, minter: string) {
+  const tokenId = ++lastTokenId;
+  const artwork = quantumArtManagement.getArtwork(artworkId);
+  if (artwork.creator !== minter) throw new Error('Not authorized');
+  tokenMetadata.set(tokenId, {
+    creator: minter,
+    artworkId,
+    title: artwork.title,
+    quantumSignature: artwork.quantumSignature,
+    creationTime: Date.now()
   });
+  tokenOwners.set(tokenId, minter);
+  return tokenId;
+}
 
-  // it("shows an example", () => {
-  //   const { result } = simnet.callReadOnlyFn("counter", "get-counter", [], address1);
-  //   expect(result).toBeUint(0);
-  // });
+function transferNFT(tokenId: number, sender: string, recipient: string) {
+  if (tokenOwners.get(tokenId) !== sender) throw new Error('Not authorized');
+  tokenOwners.set(tokenId, recipient);
+  return true;
+}
+
+describe('Quantum Art NFT Contract', () => {
+  beforeEach(() => {
+    lastTokenId = 0;
+    tokenMetadata.clear();
+    tokenOwners.clear();
+  });
+  
+  it('should mint a new NFT', () => {
+    const id = mintNFT(1, 'artist1');
+    expect(id).toBe(1);
+    const metadata = tokenMetadata.get(id);
+    expect(metadata.title).toBe('Quantum Masterpiece');
+    expect(tokenOwners.get(id)).toBe('artist1');
+  });
+  
+  it('should transfer NFT ownership', () => {
+    const id = mintNFT(2, 'artist2');
+    expect(transferNFT(id, 'artist2', 'collector1')).toBe(true);
+    expect(tokenOwners.get(id)).toBe('collector1');
+  });
+  
+  it('should not allow unauthorized minting', () => {
+    expect(() => mintNFT(3, 'unauthorized_user')).toThrow('Not authorized');
+  });
+  
+  it('should not allow unauthorized transfers', () => {
+    const id = mintNFT(4, 'artist3');
+    expect(() => transferNFT(id, 'unauthorized_user', 'collector2')).toThrow('Not authorized');
+  });
 });
+
