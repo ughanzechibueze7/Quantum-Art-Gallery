@@ -7,3 +7,5 @@ T
 $tests/quantum-art-management.test.ts,3/9/39220471a5839ff9298a6c244fa74a6ccf2afec4
 U
 %contracts/experience-integration.clar,5/3/53c496966602db81d7d7b30f1df46230069fbf36
+N
+contracts/quantum-art-nft.clar,8/2/82d9348e6f7467bae3c3d22959601ed4df08fa34
